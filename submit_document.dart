@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart'; // Add this import for date formatting
+import 'package:pikaaya/create_account.dart';
 import 'package:pikaaya/vehicle_details.dart'; // Add this line for file picker
 
 class SubmitDocument extends StatefulWidget {
@@ -16,6 +18,8 @@ class _SubmitDocumentState extends State<SubmitDocument> {
   File? _aadharFrontImage;
   File? _aadharBackImage;
   File? _drivingLicenseImage;
+  DateTime? _issueDate;
+  DateTime? _validityDate;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -104,11 +108,41 @@ class _SubmitDocumentState extends State<SubmitDocument> {
     );
   }
 
+  Future<void> _selectDate(BuildContext context, String field) async {
+    final DateTime now = DateTime.now();
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: DateTime(1900),
+      lastDate: now,
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        if (field == 'issueDate') {
+          _issueDate = pickedDate;
+        } else if (field == 'validityDate') {
+          _validityDate = pickedDate;
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Submit Document'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateAccount(),
+                ));
+          },
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -124,8 +158,8 @@ class _SubmitDocumentState extends State<SubmitDocument> {
               _buildImageUploadSection('Aadhar Card Photo (Frontside)', _aadharFrontImage, 'aadharFront'),
               _buildImageUploadSection('Aadhar Card Photo (Backside)', _aadharBackImage, 'aadharBack'),
               _buildTextField('Driving Licence Number', 'Enter your driving licence number'),
-              _buildDatePickerField('Issue Date'),
-              _buildDatePickerField('Validity Date'),
+              _buildDatePickerField('Issue Date', 'issueDate'),
+              _buildDatePickerField('Validity Date', 'validityDate'),
               _buildTextField('Issued by', 'Enter issuing authority'),
               _buildImageUploadSection('Driving Licence Photo', _drivingLicenseImage, 'driving'),
               SizedBox(height: 20),
@@ -140,8 +174,7 @@ class _SubmitDocumentState extends State<SubmitDocument> {
                     ),
                   ),
                   onPressed: () {
-           Navigator.push(context, MaterialPageRoute(builder: (context)=>VehicleDetailsScreen(),
-           ));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>VehicleDetailsScreen(),));
                   },
                   child: Text(
                     "NEXT",
@@ -208,18 +241,22 @@ class _SubmitDocumentState extends State<SubmitDocument> {
     );
   }
 
-  Widget _buildDatePickerField(String label) {
+  Widget _buildDatePickerField(String label, String field) {
+    final DateTime? date = field == 'issueDate' ? _issueDate : _validityDate;
+    final String dateText = date != null ? DateFormat('yyyy-MM-dd').format(date) : 'Select date';
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         readOnly: true,
         decoration: InputDecoration(
           labelText: label,
+          hintText: dateText,
           suffixIcon: Icon(Icons.calendar_today),
           border: OutlineInputBorder(),
         ),
         onTap: () {
-          // Handle date picker
+          _selectDate(context, field);
         },
       ),
     );

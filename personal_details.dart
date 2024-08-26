@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pikaaya/last_submission.dart';
 
 class PersonalInformationForm extends StatefulWidget {
   @override
@@ -7,6 +9,7 @@ class PersonalInformationForm extends StatefulWidget {
 
 class _PersonalInformationFormState extends State<PersonalInformationForm> {
   final _formKey = GlobalKey<FormState>();
+  final _dateController = TextEditingController();
 
   OutlineInputBorder _borderStyle() {
     return OutlineInputBorder(
@@ -15,228 +18,199 @@ class _PersonalInformationFormState extends State<PersonalInformationForm> {
     );
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime now = DateTime.now();
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: DateTime(1900),
+      lastDate: now,
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final double formFieldHeight = screenSize.height * 0.07; // Adjust form field height
+    final double buttonWidth = screenSize.width * 0.4; // Adjust button width
+
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
         title: Text('Submit Personal Information'),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    hintText: 'Enter your name',
-                    border: _borderStyle(),
-                    enabledBorder: _borderStyle(),
-                    focusedBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    ),
-                    errorBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.red, width: 2.0),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Father\'s Name',
-                    hintText: 'Enter your father\'s name',
-                    border: _borderStyle(),
-                    enabledBorder: _borderStyle(),
-                    focusedBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    ),
-                    errorBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.red, width: 2.0),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your father\'s name';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Date of Birth',
-                    hintText: 'Enter your date of birth',
-                    suffixIcon: Icon(Icons.calendar_today),
-                    border: _borderStyle(),
-                    enabledBorder: _borderStyle(),
-                    focusedBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    ),
-                    errorBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.red, width: 2.0),
-                    ),
-                  ),
-                  keyboardType: TextInputType.datetime,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your date of birth';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'House Number*',
-                    hintText: 'Enter your house number',
-                    border: _borderStyle(),
-                    enabledBorder: _borderStyle(),
-                    focusedBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    ),
-                    errorBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.red, width: 2.0),
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your house number';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Street/Area',
-                    hintText: 'Enter your street or area',
-                    border: _borderStyle(),
-                    enabledBorder: _borderStyle(),
-                    focusedBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    ),
-                    errorBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.red, width: 2.0),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your street or area';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'City/Town',
-                    hintText: 'Enter your city or town',
-                    border: _borderStyle(),
-                    enabledBorder: _borderStyle(),
-                    focusedBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    ),
-                    errorBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.red, width: 2.0),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your city or town';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: 'State',
-                    hintText: 'Select your state',
-                    border: _borderStyle(),
-                    enabledBorder: _borderStyle(),
-                    focusedBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    ),
-                    errorBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.red, width: 2.0),
-                    ),
-                  ),
-                  items: <String>['Select your state', 'State 1', 'State 2']
-                      .map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {});
-                  },
-                  validator: (value) {
-                    if (value == null || value == 'Select your state') {
-                      return 'Please select your state';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Pin Code',
-                    hintText: 'Enter your pin code',
-                    border: _borderStyle(),
-                    enabledBorder: _borderStyle(),
-                    focusedBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    ),
-                    errorBorder: _borderStyle().copyWith(
-                      borderSide: BorderSide(color: Colors.red, width: 2.0),
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your pin code';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 32.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
+        padding: EdgeInsets.all(screenSize.width * 0.04), // Padding based on screen width
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildTextFormField('Name', 'Enter your name', TextInputType.text),
+              SizedBox(height: screenSize.height * 0.02), // Adjust spacing
+              _buildTextFormField('Father\'s Name', 'Enter your father\'s name', TextInputType.text),
+              SizedBox(height: screenSize.height * 0.02), // Adjust spacing
+              _buildDateFormField('Date of Birth', 'Enter your date of birth'),
+              SizedBox(height: screenSize.height * 0.02), // Adjust spacing
+              _buildTextFormField('House Number*', 'Enter your house number', TextInputType.number),
+              SizedBox(height: screenSize.height * 0.02), // Adjust spacing
+              _buildTextFormField('Street/Area', 'Enter your street or area', TextInputType.text),
+              SizedBox(height: screenSize.height * 0.02), // Adjust spacing
+              _buildTextFormField('City/Town', 'Enter your city or town', TextInputType.text),
+              SizedBox(height: screenSize.height * 0.02), // Adjust spacing
+              _buildDropdownFormField(),
+              SizedBox(height: screenSize.height * 0.02), // Adjust spacing
+              _buildTextFormField('Pin Code', 'Enter your pin code', TextInputType.number),
+              SizedBox(height: screenSize.height * 0.04), // Adjust spacing
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: buttonWidth,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ),
                       onPressed: () {
-                        // Navigate back to the previous screen.
                         Navigator.pop(context);
                       },
-                      child: Text('PREVIOUS'),
+                      child: Text(
+                        'PREVIOUS',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenSize.width * 0.04,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          // Process the form.
-                        }
+                  ),
+                  SizedBox(
+                    width: buttonWidth,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ),
+                       onPressed: () {
+                      //   if (_formKey.currentState!.validate()) {
+                      //
+                      //   }
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LastSubmission()),
+                       );
                       },
-                      child: Text('NEXT'),
+                      child: Text(
+                        'NEXT',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenSize.width * 0.04,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  TextFormField _buildTextFormField(String label, String hint, TextInputType keyboardType, {IconData? suffixIcon}) {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        border: _borderStyle(),
+        enabledBorder: _borderStyle(),
+        focusedBorder: _borderStyle().copyWith(
+          borderSide: BorderSide(color: Colors.blue, width: 2.0),
+        ),
+        errorBorder: _borderStyle().copyWith(
+          borderSide: BorderSide(color: Colors.red, width: 2.0),
+        ),
+        suffixIcon: suffixIcon != null ? Icon(suffixIcon) : null,
+      ),
+      keyboardType: keyboardType,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter $label';
+        }
+        return null;
+      },
+    );
+  }
+
+  TextFormField _buildDateFormField(String label, String hint) {
+    return TextFormField(
+      controller: _dateController,
+      readOnly: true,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: _dateController.text.isEmpty ? hint : _dateController.text,
+        border: _borderStyle(),
+        enabledBorder: _borderStyle(),
+        focusedBorder: _borderStyle().copyWith(
+          borderSide: BorderSide(color: Colors.blue, width: 2.0),
+        ),
+        errorBorder: _borderStyle().copyWith(
+          borderSide: BorderSide(color: Colors.red, width: 2.0),
+        ),
+        suffixIcon: Icon(Icons.calendar_today),
+      ),
+      onTap: () => _selectDate(context),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your date of birth';
+        }
+        return null;
+      },
+    );
+  }
+
+  DropdownButtonFormField<String> _buildDropdownFormField() {
+    return DropdownButtonFormField<String>(
+      decoration: InputDecoration(
+        labelText: 'State',
+        hintText: 'Select your state',
+        border: _borderStyle(),
+        enabledBorder: _borderStyle(),
+        focusedBorder: _borderStyle().copyWith(
+          borderSide: BorderSide(color: Colors.blue, width: 2.0),
+        ),
+        errorBorder: _borderStyle().copyWith(
+          borderSide: BorderSide(color: Colors.red, width: 2.0),
+        ),
+      ),
+      items: <String>['Select your state', 'State 1', 'State 2'].map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        setState(() {});
+      },
+      validator: (value) {
+        if (value == null || value == 'Select your state') {
+          return 'Please select your state';
+        }
+        return null;
+      },
     );
   }
 }

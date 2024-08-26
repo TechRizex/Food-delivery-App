@@ -15,7 +15,7 @@ class _SplaceScreenState extends State<SplaceScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 5), () {
+    Timer(Duration(seconds: 4), () {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -28,7 +28,9 @@ class _SplaceScreenState extends State<SplaceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body:Stack(
+
         children: [
+
 
           Container(
 
@@ -53,18 +55,15 @@ class _SplaceScreenState extends State<SplaceScreen> {
           ),
 
           Container(
-            padding: EdgeInsets.only(left: 100, top: 130),
-            child: Text(
-              'Pikaaya',
-              style: TextStyle(color: Colors.white, fontSize: 50,fontWeight: FontWeight.w900,fontFamily:'Regular 400'),
-            ),
+           margin:EdgeInsets.fromLTRB(130, 170, 50, 0),
+            child: Image.asset('assets/Images/logoofpikaaya.png'),
           ),
 
           Container(
-            padding: EdgeInsets.only(left: 70, top: 600),
+            padding: EdgeInsets.fromLTRB(100,640,50,0),
             child: Text(
               'A Whole Grocery Store\n    at your Fingertips',
-              style: TextStyle(color: Colors.white, fontSize: 22 ),
+              style: TextStyle(color: Colors.white, fontSize: 20 ),
             ),
           ),
         ],
